@@ -334,6 +334,7 @@ dependencies = [
  "anyhow",
  "dpdk-core",
  "dpdk-net",
+ "exp-pause",
  "smoltcp",
 ]
 

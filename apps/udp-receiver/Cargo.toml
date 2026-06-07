@@ -8,3 +8,4 @@ anyhow = "1.0.102"
 smoltcp = { version = "0.13", default-features = false, features = ["medium-ethernet", "proto-ipv4", "socket-icmp", "socket-udp", "auto-icmp-echo-reply"] }
 dpdk-net = { path = "../../libs/dpdk-net" }
 dpdk-core = { path = "../../libs/dpdk-core" }
+exp-pause = { path = "../../libs/exp-pause" }

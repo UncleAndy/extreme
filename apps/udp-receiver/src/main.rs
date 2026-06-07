@@ -7,6 +7,8 @@ use smoltcp::time::Instant;
 use dpdk_core::{init_eal};
 use dpdk_net::DpdkPort;
 
+use exp_pause::SpinCounter;
+
 fn main() -> Result<()> {
     // --- Конфигурация сети ---
     let my_mac: [u8; 6] = [0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF];
@@ -66,6 +68,7 @@ fn main() -> Result<()> {
     println!("Слушаю интерфейс dpdk-tap0... Нажмите Ctrl+C для выхода.");
 
     let start_time = std::time::Instant::now();
+    let mut pauser = SpinCounter::<1024>::new();
 
     loop {
         let now = std::time::Instant::now();
@@ -78,7 +81,10 @@ fn main() -> Result<()> {
             println!(" Пойман UDP Пакет! От: {}. Размер: {} байт", endpoint, data.len());
             if let Ok(text) = std::str::from_utf8(data) {
                 println!("   Текст: \"{}\"", text.trim());
-            }
+            };
+            pauser.reset();
+        } else {
+            pauser.pause();
         }
     }
 }
