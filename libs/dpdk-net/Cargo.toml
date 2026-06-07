@@ -1,0 +1,9 @@
+[package]
+name = "dpdk-net"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+dpdk-core = { path = "../dpdk-core" }
+dpdk-sys = { path = "../dpdk-sys" }
+smoltcp = { version = "0.13", default-features = false, features = ["medium-ethernet", "proto-ipv4", "socket-icmp", "socket-udp", "auto-icmp-echo-reply"] }

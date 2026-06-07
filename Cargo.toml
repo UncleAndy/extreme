@@ -1,6 +1,12 @@
-[package]
-name = "extreme"
-version = "0.1.0"
-edition = "2024"
+[workspace]
+members = [
+    "libs/*",
+    "apps/*",
+]
+resolver = "2"
 
-[dependencies]
+[profile.release]
+opt-level = "z"      # Оптимизация по размеру
+lto = true           # Link-Time Optimization
+codegen-units = 1    # Максимальная оптимизация
+strip = true         # Удаление отладочных символов
