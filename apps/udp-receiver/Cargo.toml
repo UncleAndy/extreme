@@ -9,3 +9,4 @@ smoltcp = { version = "0.13", default-features = false, features = ["medium-ethe
 dpdk-net = { path = "../../libs/dpdk-net" }
 dpdk-core = { path = "../../libs/dpdk-core" }
 exp-pause = { path = "../../libs/exp-pause" }
+rustysbe = "0.7"

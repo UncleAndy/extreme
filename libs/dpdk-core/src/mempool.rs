@@ -43,3 +43,25 @@ pub fn create_mempool(name: &str, nb_mbufs: u32) -> Result<Mempool, String> {
         Ok(Mempool { raw: raw_pool })
     }
 }
+
+/// Находит существующий пул памяти по имени.
+/// Полезно для вторичных процессов (secondary processes).
+pub fn lookup_mempool(name: &str) -> Result<Mempool, String> {
+    // 1. Конвертируем имя пула в C-строку
+    let c_name = CString::new(name)
+        .map_err(|_| "Некорректное имя пула (содержит null-байты)".to_string())?;
+
+    unsafe {
+        // 2. Вызываем функцию поиска пула в DPDK.
+        // rte_mempool_lookup возвращает указатель на пул, если он найден, или NULL.
+        let raw_pool = dpdk::rte_mempool_lookup(c_name.as_ptr());
+
+        // 3. Проверяем, был ли найден пул
+        if raw_pool.is_null() {
+            return Err(format!("Ошибка DPDK: Пул памяти с именем '{}' не найден", name));
+        }
+
+        // Возвращаем обертку над найденным указателем
+        Ok(Mempool { raw: raw_pool })
+    }
+}

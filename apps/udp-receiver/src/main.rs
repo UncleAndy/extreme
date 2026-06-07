@@ -1,3 +1,4 @@
+use std::str::from_utf8;
 use anyhow::{Result, anyhow};
 use smoltcp::iface::{Config, Interface, SocketSet, SocketStorage};
 use smoltcp::socket::udp::{PacketBuffer as UdpPacketBuffer, PacketMetadata, Socket as UdpSocket};
@@ -79,9 +80,11 @@ fn main() -> Result<()> {
         let socket = sockets.get_mut::<UdpSocket>(udp_handle);
         if let Ok((data, endpoint)) = socket.recv() {
             println!(" Пойман UDP Пакет! От: {}. Размер: {} байт", endpoint, data.len());
-            if let Ok(text) = std::str::from_utf8(data) {
+
+            if let Ok(text) = from_utf8(&data) {
                 println!("   Текст: \"{}\"", text.trim());
-            };
+            }
+
             pauser.reset();
         } else {
             pauser.pause();

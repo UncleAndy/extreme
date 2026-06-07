@@ -81,6 +81,24 @@ impl DpdkPort {
         }
     }
 
+    /// Присоединяется к уже инициализированному порту.
+    /// Используется в secondary процессах.
+    pub fn attach(port_id: u16, mempool: &Mempool) -> Result<Self, String> {
+        // Проверяем, существует ли вообще такой порт
+        unsafe {
+            if dpdk::rte_eth_dev_count_avail() <= port_id {
+                return Err(format!("Порт {} не доступен в системе", port_id));
+            }
+        }
+
+        // Просто возвращаем структуру без вызова функций конфигурации
+        Ok(DpdkPort {
+            id: port_id,
+            rx_queue: VecDeque::new(), // Создаем пустую очередь для приема пакетов
+            mempool: mempool.raw,      // Сохраняем указатель на пул памяти
+        })
+    }
+
     pub fn rx_burst(&self, max_packets: usize) -> Vec<PacketBuffer> {
         let mut raw_mbufs: Vec<*mut dpdk::rte_mbuf> = vec![ptr::null_mut(); max_packets];
         unsafe {
